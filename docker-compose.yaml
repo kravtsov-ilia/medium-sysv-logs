@@ -1,0 +1,22 @@
+version: "3.9"
+
+networks:
+  main:
+
+services:
+  test_logging:
+    container_name: "test_logging"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    user: root
+    tty: true
+    stdin_open: true
+    environment:
+      - USED_LOGGER=${USED_LOGGER}
+    ipc: shareable
+    sysctls:
+      kernel.msgmax: 500         # Max message size (500 bytes)
+      kernel.msgmnb: 1073741824  # Queue size (1 Гб)
+    networks:
+      - main

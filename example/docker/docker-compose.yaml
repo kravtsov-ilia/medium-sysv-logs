@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  sysv_publisher:
+    build:
+      context: ./..
+      dockerfile: docker/Dockerfile_publisher
+    user: root
+    tty: true
+    stdin_open: true
+    ipc: shareable
+    sysctls:
+      kernel.msgmax: 4194304    # Max message size (4 Мб)
+      kernel.msgmnb: 1073741824 # Queue size (1 Гб)
+      kernel.msgmni: 10000      # Max messages count in queue
+    healthcheck:
+      test: sleep 5
+      interval: 10s
+      retries: 3
+      timeout: 10s
+
+  sysv_subscriber:
+    build:
+      context: ./..
+      dockerfile: docker/Dockerfile_subscriber
+    tty: true
+    stdin_open: true
+    depends_on:
+      sysv_publisher:
+        condition: service_healthy
+    ipc: "service:sysv_publisher"

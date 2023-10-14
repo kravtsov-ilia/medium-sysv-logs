@@ -1,0 +1,8 @@
+FROM python:3.10-alpine
+RUN apk add build-base
+RUN pip install sysv_ipc
+
+WORKDIR /code
+COPY sysv_subscriber.py .
+
+CMD ["python", "sysv_subscriber.py"]
